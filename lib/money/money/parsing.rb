@@ -283,7 +283,9 @@ class Money
           major, minor = num.gsub(thousands_separator, '').split(decimal_mark)
           min = 0 unless min
         when 1
-          # we can't determine if the comma or period is supposed to be a decimal_mark or a thousands_separator
+          # we can't determine if the comma or period is supposed to be a
+          # decimal_mark or a thousands_separator.
+          #
           # e.g.
           # 1,00 - comma is a thousands_separator
           # 1.000 - period is a thousands_separator
@@ -305,12 +307,15 @@ class Money
               major, minor = num.gsub(decimal_mark, ''), 0
             else
               # ex: 1,000 - 1.0000 - 10001.000
-              # split number into possible major (dollars) and minor (cents) values
-              possible_major, possible_minor = num.split(decimal_mark)
+              # split number into possible major (dollars) and minor (cents)
+              # values
+              possible_major, possible_minor = num.split(separator)
               possible_major ||= "0"
               possible_minor ||= "00"
 
-              # if the minor (cents) length isn't 3, assign major/minor from the possibles
+              # if the minor (cents) length isn't 3, assign major/minor from the
+              # possibles.
+              #
               # e.g.
               #   1,00 => 1.00
               #   1.0000 => 1.00
