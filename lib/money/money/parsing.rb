@@ -294,17 +294,17 @@ class Money
           # 10000,00 - comma is a thousands_separator
           # 1000,000 - comma is a thousands_separator
 
-          # assign first decimal_mark for reusability
-          decimal_mark = used_delimiters.first
+          # assign first separator for reusability
+          separator = used_delimiters.first
 
           # When we have identified the decimal mark character
-          if decimal_char == decimal_mark
+          if decimal_char == separator
             major, minor = num.split(decimal_char)
-
           else
-            # decimal_mark is used as a decimal_mark when there are multiple instances, always
-            if num.scan(decimal_mark).length > 1 # multiple matches; treat as decimal_mark
-              major, minor = num.gsub(decimal_mark, ''), 0
+            # separator is always used as a decimal_mark when there are multiple
+            # instances.
+            if num.scan(separator).length > 1
+              major, minor = num.gsub(separator, ''), 0
             else
               # ex: 1,000 - 1.0000 - 10001.000
               # split number into possible major (dollars) and minor (cents)
@@ -336,7 +336,7 @@ class Money
                 else
                   # number is in format ###{sep}### or ##{sep}### or #{sep}###
                   # handle as , is sep, . is thousands_separator
-                  if decimal_mark == '.'
+                  if separator == '.'
                     major, minor = possible_major, possible_minor
                   else
                     major, minor = "#{possible_major}#{possible_minor}", 0
