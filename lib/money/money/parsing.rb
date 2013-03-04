@@ -244,9 +244,6 @@ class Money
         # set a boolean flag for if the number is negative or not
         negative = num =~ /^-|-$/ ? true : false
 
-        # decimal mark character
-        decimal_char = currency.decimal_mark
-
         # if negative, remove the minus sign from the number
         # if it's not negative, the hyphen makes the value invalid
         if negative
@@ -297,57 +294,23 @@ class Money
           # assign first separator for reusability
           separator = used_delimiters.first
 
-          # When we have identified the decimal mark character
-          if decimal_char == separator
-            major, minor = num.split(decimal_char)
-          else
-            # separator is always used as a decimal_mark when there are multiple
-            # instances.
-            if num.scan(separator).length > 1
-              major, minor = num.gsub(separator, ''), 0
-            else
-              # ex: 1,000 - 1.0000 - 10001.000
-              # split number into possible major (dollars) and minor (cents)
-              # values
-              possible_major, possible_minor = num.split(separator)
-              possible_major ||= "0"
-              possible_minor ||= "00"
+          # fetch decimal/thousands separators
+          decimal_char = currency.decimal_mark
+          thousands_separator = currency.thousands_separator
 
-              # if the minor (cents) length isn't 3, assign major/minor from the
-              # possibles.
-              #
-              # e.g.
-              #   1,00 => 1.00
-              #   1.0000 => 1.00
-              #   1.2 => 1.20
-              if possible_minor.length != 3 # thousands_separator
-                major, minor = possible_major, possible_minor
-              else
-                # minor length is three
-                # let's try to figure out intent of the thousands_separator
+          if decimal_char == separator # decimal separator
+            major, minor = num.split(separator)
+          elsif thousands_separator == separator # thousands separator
 
-                # the major length is greater than three, which means
-                # the comma or period is used as a thousands_separator
-                # e.g.
-                #   1000,000
-                #   100000,000
-                if possible_major.length > 3
-                  major, minor = possible_major, possible_minor
-                else
-                  # number is in format ###{sep}### or ##{sep}### or #{sep}###
-                  # handle as , is sep, . is thousands_separator
-                  if separator == '.'
-                    major, minor = possible_major, possible_minor
-                  else
-                    major, minor = "#{possible_major}#{possible_minor}", 0
-                  end
-                end
+            major, minor = 
+              if num.split(separator).last.length != 3
+                num.split(separator)
+              else # thousands separator
+                [num.gsub(separator, ''), 0]
               end
-            end
+          else
+            raise ArgumentError, "Invalid currency amount"
           end
-        else
-          # TODO: ParseError
-          raise ArgumentError, "Invalid currency amount"
         end
 
         # build the string based on major/minor since decimal_mark/thousands_separator have been removed
