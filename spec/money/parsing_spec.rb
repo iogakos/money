@@ -146,6 +146,16 @@ describe Money, "parsing" do
         "$3,331.0034".to_money("BAR").should == Money.new(33310034, "BAR")
         "€3.331,0034".to_money("EU4").should == Money.new(33310034, "EU4")
 
+        "$1,231,001".to_money("BAR").should == Money.new(12310010000, "BAR")
+        "€1.231.001".to_money("EU4").should == Money.new(12310010000, "EU4")
+
+        "$1075,003".to_money("BAR").should == Money.new(10750030, "BAR")
+        "€1075.003".to_money("EU4").should == Money.new(10750030, "EU4")
+
+        "€210.002".to_money("EU4").should == Money.new(2100020, "EU4")
+        "€16.003".to_money("EU4").should == Money.new(160030, "EU4")
+        "€3.004".to_money("EU4").should == Money.new(30040, "EU4")
+
         "$8,883,331.0034".to_money("BAR").should == Money.new(88833310034, "BAR")
         "€8.883.331,0034".to_money("EU4").should == Money.new(88833310034, "EU4")
       end

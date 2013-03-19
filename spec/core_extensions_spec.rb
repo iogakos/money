@@ -55,6 +55,8 @@ describe Money, "core extensions" do
         "1,000.0000"      => Money.new(1_000_00)          ,
         "1,000.5000"      => Money.new(1_000_50)          ,
         "1,000.5099"      => Money.new(1_000_51)          ,
+        "1,000,501"       => Money.new(1_000_501_00)      ,
+        "1075,003"        => Money.new(1_075_00)          ,
         "1.550"           => Money.new(1_55)              ,
         "25."             => Money.new(25_00)             ,
         ".75"             => Money.new(75)                ,
